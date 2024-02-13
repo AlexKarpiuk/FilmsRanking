@@ -1,0 +1,56 @@
+﻿@model MediaContent
+
+<div class="container">
+
+    <h1 class="my-4">
+        @Model.Name
+    </h1>
+
+    <div class="row">
+
+        <div class="col-md-4">
+            <img class="img-fluid" src="@Model.PosterImageUrl" alt="">
+        </div>
+
+        <div class="col-md-8">
+            <p>IMDb Rating: @Model.Rating</p>
+            <ul>
+                <li>Director: @Model.Director</li>
+                <li>@Model.Duration</li>
+                <li>@Model.Type</li>
+            </ul>
+        </div>
+
+    </div>
+
+    @*  <h3 class="my-4">Related Projects</h3>
+
+    <div class="row">
+
+    <div class="col-md-3 col-sm-6 mb-4">
+    <a href="#">
+    <img class="img-fluid" src="https://via.placeholder.com/500x300" alt="">
+    </a>
+    </div>
+
+    <div class="col-md-3 col-sm-6 mb-4">
+    <a href="#">
+    <img class="img-fluid" src="https://via.placeholder.com/500x300" alt="">
+    </a>
+    </div>
+
+    <div class="col-md-3 col-sm-6 mb-4">
+    <a href="#">
+    <img class="img-fluid" src="https://via.placeholder.com/500x300" alt="">
+    </a>
+    </div>
+
+    <div class="col-md-3 col-sm-6 mb-4">
+    <a href="#">
+    <img class="img-fluid" src="https://via.placeholder.com/500x300" alt="">
+    </a>
+    </div>
+
+    </div>
+    *@
+</div>
