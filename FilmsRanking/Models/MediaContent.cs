@@ -15,5 +15,6 @@ namespace FilmsRanking.Models
         public string? PosterImageUrl { get; set; }
         public MovieTypes Type { get; set; }
         public ICollection<WishList> WishLists { get; set; }
+        public string? ImagePublicId { get; set; }
     }
 }

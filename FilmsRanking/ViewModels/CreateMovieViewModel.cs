@@ -9,7 +9,7 @@ namespace FilmsRanking.ViewModels
         public string Director { get; set; }
         public float Rating { get; set; }
         public TimeSpan? Duration { get; set; }
-        public string? PosterImageUrl { get; set; }
+        public IFormFile Image { get; set; }
         public MovieTypes Type { get; set; }
     }
 }
