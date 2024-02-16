@@ -104,5 +104,15 @@ namespace FilmsRanking.Controllers
 
             else return View(editMovieViewModel);           
         }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            var movie = await _mediaContentRepository.GetByIdAsync(id);
+
+            if (movie == null) return View("Error");
+
+            _mediaContentRepository.Delete(movie);  
+            return RedirectToAction("Index");
+        }
     }
 }
