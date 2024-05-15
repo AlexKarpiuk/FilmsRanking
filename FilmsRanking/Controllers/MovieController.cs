@@ -1,7 +1,12 @@
-﻿using FilmsRanking.Interfaces;
+﻿using FilmsRanking.Data.Enum;
+using FilmsRanking.Interfaces;
 using FilmsRanking.Models;
 using FilmsRanking.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace FilmsRanking.Controllers
 {
@@ -15,9 +20,46 @@ namespace FilmsRanking.Controllers
             _mediaContentRepository = mediaContentRepository;
             _photoService = photoService;
         }
+
         public async Task<IActionResult> Index()
         {
             var movies = await _mediaContentRepository.GetAll();
+
+            return View(movies);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> Index(string searchString, string sortOrder, MovieTypes[] movieTypes, Genre[] movieGenres)
+        {
+            var movies = await _mediaContentRepository.GetAll();
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                movies = await _mediaContentRepository.GetBySearch(searchString);
+            }
+
+            switch (sortOrder)
+            {
+                case "Rating":
+                    movies = movies.OrderByDescending(x => x.Rating).ToList();
+                    break;
+
+                case "Duration":
+                    movies = movies.OrderByDescending(x => x.Duration).ToList();
+                    break;
+            }
+
+            if (movieGenres != null && movieGenres.Length > 0)
+            {
+                movies = movies.Where(s => movieGenres.Contains(s.Genre));
+            }
+
+            if (movieTypes != null && movieTypes.Length > 0)
+            {
+                movies = movies.Where(s => movieTypes.Contains(s.Type));
+            }
+
             return View(movies);
         }
 
@@ -49,6 +91,7 @@ namespace FilmsRanking.Controllers
                     PosterImageUrl = result.Url.ToString(),
                     ImagePublicId = result.PublicId,
                     Type = createMovieViewModel.Type,
+                    Genre = createMovieViewModel.Genre,
                 };
                 _mediaContentRepository.Add(mediaContent);
                 return RedirectToAction("Index");
@@ -75,6 +118,7 @@ namespace FilmsRanking.Controllers
                 Duration = movie.Duration,
                 PosterImageUrl = movie.PosterImageUrl,
                 Type = movie.Type,
+                Genre = movie.Genre,
             };
 
             return View(editMovieViewModel);
@@ -118,6 +162,7 @@ namespace FilmsRanking.Controllers
                         PosterImageUrl = photoResult.Url.ToString(),
                         ImagePublicId = photoResult.PublicId,
                         Type = editMovieViewModel.Type,
+                        Genre = editMovieViewModel.Genre,
                     };
 
                     _mediaContentRepository.Update(mediaContent);
@@ -135,15 +180,18 @@ namespace FilmsRanking.Controllers
 
             if (movie == null) return View("Error");
 
-            try
+            if(movie.ImagePublicId != null)
             {
-                await _photoService.DeletePhotoAsync(movie.ImagePublicId);
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError("", "Could not delete photo");
+                try
+                {
+                    await _photoService.DeletePhotoAsync(movie.ImagePublicId);
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Could not delete photo");
 
-                return View("Error");
+                    return View("Error");
+                }
             }
 
             _mediaContentRepository.Delete(movie);  

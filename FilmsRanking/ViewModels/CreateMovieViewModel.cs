@@ -11,5 +11,6 @@ namespace FilmsRanking.ViewModels
         public TimeSpan? Duration { get; set; }
         public IFormFile Image { get; set; }
         public MovieTypes Type { get; set; }
+        public Genre Genre { get; set; }
     }
 }

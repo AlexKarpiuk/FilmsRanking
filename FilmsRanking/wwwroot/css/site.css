@@ -16,3 +16,80 @@ html {
 body {
     margin-bottom: 60px;
 }
+
+.dropdown-menu {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.glow-btn {
+    background-color: #007bff; /* Blue color */
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition-duration: 0.4s;
+    position: relative;
+}
+
+.glow-btn:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    animation: glowing 1500ms infinite alternate;
+}
+
+@keyframes glowing {
+    0% {
+        box-shadow: 0 0 5px #007bff; /* Blue glow */
+    }
+
+    100% {
+        box-shadow: 0 0 10px #007bff, 0 0 15px #0056b3, 0 0 20px #0056b3, 0 0 25px #0056b3; /* Blue to darker blue glow */
+    }
+}
+
+.glow-clear-btn {
+    background-color: #FF0000;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition-duration: 0.4s;
+    position: relative;
+}
+
+.glow-clear-btn:hover {
+    background-color: #B22222;
+    animation: red-glowing 1500ms infinite alternate;
+    color: white;
+}
+
+@keyframes red-glowing {
+    0% {
+        box-shadow: 0 0 5px #FF0000;
+    }
+
+    100% {
+        box-shadow: 0 0 10px #FF0000, 0 0 15px #B22222, 0 0 20px #B22222, 0 0 25px #B22222;
+    }
+}
+
+.glow-input:focus {
+    border: 2px solid #007bff; /* Blue border color when input is focused */
+    outline: none; /* Remove default focus outline */
+    animation: glowing 800ms infinite alternate;
+}
+
+
+

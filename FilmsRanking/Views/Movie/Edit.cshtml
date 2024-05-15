@@ -32,6 +32,13 @@
         <span asp-validation-for="Type" class="text-danger"></span>
     </div>
     <div class="form-group">
+        <label asp-for="Genre">Genre</label>
+        <select asp-for="Genre" asp-items="@Html.GetEnumSelectList<Genre>()" class="form-control form-control-lg">
+            <option>--Select--</option>
+        </select>
+        <span asp-validation-for="Genre" class="text-danger"></span>
+    </div>
+    <div class="form-group">
         <label asp-for="Image">Image</label>
         <input asp-for="Image" type="file" class="form-control" placeholder="Image">
         <span asp-validation-for="Image" class="text-danger"></span>

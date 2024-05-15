@@ -1,4 +1,5 @@
 ﻿using FilmsRanking.Data;
+using FilmsRanking.Data.Enum;
 using FilmsRanking.Interfaces;
 using FilmsRanking.Models;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +30,11 @@ namespace FilmsRanking.Repositories
         public async Task<IEnumerable<MediaContent>> GetAll()
         {
             return await _context.MediaContent.ToListAsync();
+        }
+
+        public async Task<IEnumerable<MediaContent>> GetBySearch(string searchString)
+        {
+            return await _context.MediaContent.Where(s => s.Name!.Contains(searchString) || s.Director.Contains(searchString)).ToListAsync();
         }
 
         public async Task<MediaContent> GetByIdAsync(int id)
