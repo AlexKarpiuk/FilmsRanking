@@ -1,0 +1,33 @@
+﻿namespace FilmsRanking.Data.Enum
+{
+    public enum Genre
+    {
+        Action,
+        Comedy,
+        Drama,
+        Horror,
+        ScienceFiction,
+        Adventure,
+        Thriller,
+        Romance,
+        Crime,
+        Fantasy,
+        Documentary,
+        Western,
+        War,
+        Biographical,
+        Mystery,
+        Sports,
+        Historical,
+        Musical,
+        Animation,
+        Family,
+        MartialArts,
+        Music,
+        Magic,
+        Educational,
+        Superhero,
+        RealityTV,
+        Cooking
+    }
+}

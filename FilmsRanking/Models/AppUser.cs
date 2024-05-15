@@ -10,5 +10,6 @@ namespace FilmsRanking.Models
         public string EmailAddress { get; set; }
         public string? ProfileImageUrl { get; set; }
         public ICollection<WishList> WishLists { get; set; }
+        public string? ImagePublicId { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using FilmsRanking.Models;
+﻿using FilmsRanking.Data.Enum;
+using FilmsRanking.Models;
 
 namespace FilmsRanking.Interfaces
 {
@@ -7,6 +8,7 @@ namespace FilmsRanking.Interfaces
         Task<IEnumerable<MediaContent>> GetAll();
         Task<MediaContent> GetByIdAsync(int id);
         Task<MediaContent> GetByIdNoTrackingAsync(int id);
+        Task<IEnumerable<MediaContent>> GetBySearch(string searchString);
 
         bool Add(MediaContent mediaContent);
         bool Update(MediaContent mediaContent);

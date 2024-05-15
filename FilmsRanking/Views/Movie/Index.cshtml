@@ -1,4 +1,5 @@
-﻿@model IEnumerable<MediaContent>
+﻿@using FilmsRanking.Data.Enum
+@model IEnumerable<MediaContent>
 
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -6,12 +7,121 @@
 @{
 }
 
+<style>
+    /* Custom CSS to adjust dropdown menu size */
+    .dropdown-menu {
+        max-height: 200px; /* Adjust the value as needed */
+        overflow-y: auto; /* Enable vertical scroll if content exceeds max height */
+    }
+</style>
+
 <div class="album py-5 bg-light">
+    <div class="container mb-2">
+        <form asp-controller="Movie" asp-action="Index" method="post">
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        
+                        <input type="text" class="form-control glow-input" placeholder="Search..." name="searchString" aria-describedby="basic-addon2">
+                        
+                        <div class="input-group-append" style="margin-left: 10px">
+                            <button class="btn glow-btn" type="submit">Search</button>
+                        </div>
+
+                        <div class="input-group-append" style="margin-left: 10px">
+                            <a asp-controller="Movie" asp-action="Index" class="btn glow-clear-btn">Clear</a>
+                        </div>
+
+                    </div>                  
+                </div>                                           
+            </div>
+
+            <div class="row float-right mt-3 mr-0 ml-0">
+                <div class="col-md-6 d-flex align-items-center">
+                    
+                    <div class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            Genres
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            @foreach (var genre in Html.GetEnumSelectList<Genre>())
+                            {
+                                <li><label class="dropdown-item"><input type="checkbox" class="form-check-input" name="movieGenres" value="@genre.Value">@genre.Text</label></li>
+                            }
+                        </ul> 
+                    </div>
+
+                    <div class="dropdown" style="margin-left: 10px">
+                        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            Types
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            @foreach (var type in Html.GetEnumSelectList<MovieTypes>())
+                            {
+                                <li><label class="dropdown-item"><input type="checkbox" class="form-check-input" name="movieTypes" value="@type.Value">@type.Text</label></li>
+                            }
+                        </ul>
+                    </div>
+
+                    <div class="dropdown" style="margin-left: 10px">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                            Sort By
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <label class="dropdown-item"><input type="radio" name="sortOrder" value="Rating" style="margin-right: 4px">Rating</input></label>
+                            <label class="dropdown-item"><input type="radio" name="sortOrder" value="Duration" style="margin-right: 4px">Duration</input></label>
+                        </div>
+                    </div>
+
+                    <div class="form-check form-switch" style="margin-left: 10px">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                    </div>
+
+                   @*  <div class="input-group">
+
+                        <div class="input-group-append" style="margin-left: 10px">
+                            <button type="button" class="btn btn-primary">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sort-down" viewBox="0 0 16 16">
+                                    <path d="M3.5 2.5a.5.5 0 0 0-1 0v8.793l-1.146-1.147a.5.5 0 0 0-.708.708l2 1.999.007.007a.497.497 0 0 0 .7-.006l2-2a.5.5 0 0 0-.707-.708L3.5 11.293zm3.5 1a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5M7.5 6a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1zm0 3a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1zm0 3a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1z"></path>
+                                </svg>
+                                Sort By Rating
+                            </button>
+                        </div>
+
+                        <div class="input-group-append" style="margin-left: 10px">
+                            <button type="button" class="btn btn-primary">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sort-down" viewBox="0 0 16 16">
+                                    <path d="M3.5 2.5a.5.5 0 0 0-1 0v8.793l-1.146-1.147a.5.5 0 0 0-.708.708l2 1.999.007.007a.497.497 0 0 0 .7-.006l2-2a.5.5 0 0 0-.707-.708L3.5 11.293zm3.5 1a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5M7.5 6a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1zm0 3a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1zm0 3a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1z"></path>
+                                </svg>
+                                Sort By Duration
+                            </button>
+
+                        </div>
+                     </div> *@
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+@*             <div class="row">
+                <div class="col-md-6">
+                    <select asp-for="Genre" asp-items="Model.Genres">
+                        <option value="">All</option>
+                    </select>
+                </div>
+            </div> *@
+    
+
+    <!-- Bootstrap JS (Optional) -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
     <div class="container">
         <div class="row">
             @foreach (var item in Model)
             {
-                <div class="col-md-3">
+                <div class="col-md-3" style="margin-bottom: 15px">
                     <div class="card mb-4 box-shadow h-100">
                         <img class="card-img-top" src="@item.PosterImageUrl" width="100%" height="225" alt="Card image cap">
                         <div class="card-body">
@@ -19,7 +129,8 @@
                             <p class="card-text">@item.Director</p>
                             <p class="card-text">@item.Duration</p>
                             <p class="card-text">@item.Rating</p>
-                            <p class="card-text">@item.Type</p>                          
+                            <p class="card-text">@item.Type</p>
+                            <p class="card-text">@item.Genre</p>
                         </div>
                         <div class="card-footer">
                             <div class="d-flex justify-content-between align-items-center">
@@ -27,18 +138,21 @@
                                     <a type="btn-succes" asp-controller="Movie" asp-action="Detail" asp-route-id="@item.Id"
                                        class="btn btn-sm btn-outline-secondary">View</a>
                                     <a asp-controller="Movie" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
-                                    <a type="button" class="btn btn-sm btn-outline-danger" asp-controller="Movie" asp-action="Delete" asp-route-id="@item.Id">
-                                        Delete
-                                    </a>
-                                </div>
+                                    <form asp-controller="Movie" asp-action="Delete" asp-route-id="@item.Id"
+                                          onclick="return confirm('Are you sure you want to delete this?')">
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary">Delete</button>
+                                    </form>                                
+                               </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            }
+            }            
         </div>
     </div>
 </div>
+
+
 
 @* <div class="album py-5 bg-light">
     <div class="container">
