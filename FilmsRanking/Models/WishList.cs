@@ -12,7 +12,7 @@ namespace FilmsRanking.Models
         [ForeignKey("MediaContent")]
         public int? MovieId { get; set; }
         [ForeignKey("AppUser")]
-        public int? UserID { get; set; }
+        public string? AppUserId { get; set; }
         public AppUser? AppUser { get; set; }
         public MediaContent? MediaContent { get; set; }
     }

@@ -41,6 +41,7 @@ body {
 .glow-btn:hover {
     background-color: #0056b3; /* Darker blue on hover */
     animation: glowing 1500ms infinite alternate;
+    color: white;
 }
 
 @keyframes glowing {

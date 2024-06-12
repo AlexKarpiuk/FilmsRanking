@@ -1,13 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace FilmsRanking.Models
 {
-    public class AppUser
+    public class AppUser : IdentityUser
     {
-        [Key]
-        public int Id { get; set; }
-        public string UserName { get; set; }
-        public string EmailAddress { get; set; }
         public string? ProfileImageUrl { get; set; }
         public ICollection<WishList> WishLists { get; set; }
         public string? ImagePublicId { get; set; }

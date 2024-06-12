@@ -1,7 +1,10 @@
-﻿using FilmsRanking.Data.Enum;
+﻿using FilmsRanking.Data;
+using FilmsRanking.Data.Enum;
 using FilmsRanking.Interfaces;
 using FilmsRanking.Models;
 using FilmsRanking.ViewModels;
+using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -10,15 +13,18 @@ using static System.Reflection.Metadata.BlobBuilder;
 
 namespace FilmsRanking.Controllers
 {
+    [AutoValidateAntiforgeryToken]
     public class MovieController : Controller
     {
         private readonly IMediaContentRepository _mediaContentRepository;
         private readonly IPhotoService _photoService;
+        private readonly ISanitizerService _sanitizerService;
 
-        public MovieController(IMediaContentRepository mediaContentRepository, IPhotoService photoService)
+        public MovieController(IMediaContentRepository mediaContentRepository, IPhotoService photoService, ISanitizerService sanitizerService)
         {
             _mediaContentRepository = mediaContentRepository;
             _photoService = photoService;
+            _sanitizerService = sanitizerService;
         }
 
         public async Task<IActionResult> Index()
@@ -28,14 +34,15 @@ namespace FilmsRanking.Controllers
             return View(movies);
         }
 
-
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(string searchString, string sortOrder, MovieTypes[] movieTypes, Genre[] movieGenres)
         {
             var movies = await _mediaContentRepository.GetAll();
 
             if (!String.IsNullOrEmpty(searchString))
             {
+                searchString = _sanitizerService.SanitizeHtml(searchString);
                 movies = await _mediaContentRepository.GetBySearch(searchString);
             }
 
@@ -69,13 +76,16 @@ namespace FilmsRanking.Controllers
             return View(media);
         }
 
-        public IActionResult Create() 
-        { 
+        [Authorize(Roles = UserRoles.Admin)]
+        public IActionResult Create()
+        {
             CreateMovieViewModel createMovieViewModel = new CreateMovieViewModel();
             return View(createMovieViewModel);
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> Create(CreateMovieViewModel createMovieViewModel)
         {
             if(ModelState.IsValid == true)
@@ -84,8 +94,8 @@ namespace FilmsRanking.Controllers
 
                 var mediaContent = new MediaContent
                 {
-                    Name = createMovieViewModel.Name,
-                    Director = createMovieViewModel.Director,
+                    Name = _sanitizerService.SanitizeHtml(createMovieViewModel.Name),
+                    Director = _sanitizerService.SanitizeHtml(createMovieViewModel.Director),
                     Rating = createMovieViewModel.Rating,
                     Duration = createMovieViewModel.Duration,
                     PosterImageUrl = result.Url.ToString(),
@@ -93,6 +103,7 @@ namespace FilmsRanking.Controllers
                     Type = createMovieViewModel.Type,
                     Genre = createMovieViewModel.Genre,
                 };
+
                 _mediaContentRepository.Add(mediaContent);
                 return RedirectToAction("Index");
             }
@@ -104,6 +115,7 @@ namespace FilmsRanking.Controllers
             return View(createMovieViewModel);       
         }
 
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> Edit(int id)
         {
             var movie = await _mediaContentRepository.GetByIdAsync(id);
@@ -125,6 +137,7 @@ namespace FilmsRanking.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> Edit(int id, EditMovieViewModel editMovieViewModel)
         {
             if (!ModelState.IsValid)
@@ -155,8 +168,8 @@ namespace FilmsRanking.Controllers
                     var mediaContent = new MediaContent
                     {
                         Id = existingMovie.Id,
-                        Name = editMovieViewModel.Name,
-                        Director = editMovieViewModel.Director,
+                        Name = _sanitizerService.SanitizeHtml(editMovieViewModel.Name),
+                        Director = _sanitizerService.SanitizeHtml(editMovieViewModel.Director),
                         Rating = editMovieViewModel.Rating,
                         Duration = editMovieViewModel.Duration,
                         PosterImageUrl = photoResult.Url.ToString(),
@@ -174,6 +187,8 @@ namespace FilmsRanking.Controllers
             else return View(editMovieViewModel);           
         }
 
+        [HttpDelete]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> Delete(int id)
         {
             var movie = await _mediaContentRepository.GetByIdAsync(id);
