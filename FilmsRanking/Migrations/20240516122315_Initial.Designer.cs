@@ -4,6 +4,7 @@ using FilmsRanking.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FilmsRanking.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240516122315_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -129,7 +132,7 @@ namespace FilmsRanking.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MediaContent", (string)null);
+                    b.ToTable("MediaContent");
                 });
 
             modelBuilder.Entity("FilmsRanking.Models.WishList", b =>
@@ -156,7 +159,7 @@ namespace FilmsRanking.Migrations
 
                     b.HasIndex("MovieId");
 
-                    b.ToTable("WishList", (string)null);
+                    b.ToTable("WishList");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
