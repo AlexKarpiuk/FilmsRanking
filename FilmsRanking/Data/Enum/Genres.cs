@@ -2,6 +2,7 @@
 {
     public enum Genre
     {
+        Undefinied,
         Action,
         Comedy,
         Drama,
@@ -15,19 +16,10 @@
         Documentary,
         Western,
         War,
-        Biographical,
-        Mystery,
-        Sports,
         Historical,
-        Musical,
         Animation,
         Family,
-        MartialArts,
         Music,
-        Magic,
-        Educational,
-        Superhero,
-        RealityTV,
-        Cooking
+        TVMovie
     }
 }

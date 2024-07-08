@@ -4,7 +4,6 @@
     {
         Movie,
         Series,
-        Cartoon,
         Anime
     }
 }

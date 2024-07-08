@@ -9,7 +9,7 @@ namespace FilmsRanking.Models
         [Key]
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Director { get; set; }
+        public string Overview { get; set; }
         public float Rating { get; set; }
         public TimeSpan? Duration { get; set; }
         public string? PosterImageUrl { get; set; }
