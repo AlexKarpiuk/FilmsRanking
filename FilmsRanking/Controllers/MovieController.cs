@@ -1,5 +1,6 @@
 ﻿using FilmsRanking.Data;
 using FilmsRanking.Data.Enum;
+using FilmsRanking.Helpers;
 using FilmsRanking.Interfaces;
 using FilmsRanking.Models;
 using FilmsRanking.ViewModels;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System.Linq;
 using static System.Reflection.Metadata.BlobBuilder;
 
@@ -95,7 +97,7 @@ namespace FilmsRanking.Controllers
                 var mediaContent = new MediaContent
                 {
                     Name = _sanitizerService.SanitizeHtml(createMovieViewModel.Name),
-                    Director = _sanitizerService.SanitizeHtml(createMovieViewModel.Director),
+                    Overview = _sanitizerService.SanitizeHtml(createMovieViewModel.Overview),
                     Rating = createMovieViewModel.Rating,
                     Duration = createMovieViewModel.Duration,
                     PosterImageUrl = result.Url.ToString(),
@@ -125,7 +127,7 @@ namespace FilmsRanking.Controllers
             var editMovieViewModel = new EditMovieViewModel
             {
                 Name = movie.Name,
-                Director = movie.Director,
+                Overview = movie.Overview,
                 Rating = movie.Rating,
                 Duration = movie.Duration,
                 PosterImageUrl = movie.PosterImageUrl,
@@ -169,7 +171,7 @@ namespace FilmsRanking.Controllers
                     {
                         Id = existingMovie.Id,
                         Name = _sanitizerService.SanitizeHtml(editMovieViewModel.Name),
-                        Director = _sanitizerService.SanitizeHtml(editMovieViewModel.Director),
+                        Overview = _sanitizerService.SanitizeHtml(editMovieViewModel.Overview),
                         Rating = editMovieViewModel.Rating,
                         Duration = editMovieViewModel.Duration,
                         PosterImageUrl = photoResult.Url.ToString(),
@@ -210,6 +212,42 @@ namespace FilmsRanking.Controllers
             }
 
             _mediaContentRepository.Delete(movie);  
+            return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> PutIntoDb()
+        {
+
+            string jsonString = await TMDBApiCaller.GetMoviesAsync(1);
+            var root = JsonConvert.DeserializeObject<Root>(jsonString);
+            List<MovieLink> movieLinks = root.results;
+            List<MovieToDb> movieToDbs = new List<MovieToDb>();
+
+            foreach (var movie in movieLinks)
+            {
+                string movieByIdJson = await TMDBApiCaller.GetByIdAsync(movie.id);
+                var movieToDb = JsonConvert.DeserializeObject<MovieToDb>(movieByIdJson);
+                movieToDbs.Add(movieToDb);
+            }
+
+            foreach (var movie in movieToDbs)
+            {
+                var mediaContent = new MediaContent
+                {
+                    Name = movie.title,
+                    Overview = movie.tagline,
+                    Rating = movie.vote_average,
+                    Duration = TimeSpanConverter.ConvertMinutesToTimeSpan(movie.runtime),
+                    PosterImageUrl = $"https://image.tmdb.org/t/p/w500/{movie.poster_path}",
+                    ImagePublicId = "",
+                    Type = MovieTypes.Movie,
+                    Genre = GenreMapper.MapGenres(movie.genres)
+                };
+
+                _mediaContentRepository.Add(mediaContent);
+
+            }
+
             return RedirectToAction("Index");
         }
     }

@@ -34,7 +34,7 @@ namespace FilmsRanking.Repositories
 
         public async Task<IEnumerable<MediaContent>> GetBySearch(string searchString)
         {
-            return await _context.MediaContent.Where(s => s.Name!.Contains(searchString) || s.Director.Contains(searchString)).ToListAsync();
+            return await _context.MediaContent.Where(s => s.Name!.Contains(searchString) || s.Overview.Contains(searchString)).ToListAsync();
         }
 
         public async Task<MediaContent> GetByIdAsync(int id)
